@@ -7,6 +7,24 @@
 
 @section('styles')
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <style>
+        .course-details {
+            position: relative;
+        }
+        .course-details p {
+            padding-left: 25px;
+        }
+        .course-details i {
+            position: absolute;
+            left: 8px;
+            margin-top: 1px;
+            background-image: url(../images-new/icon/green-check.png);
+            background-size: 16px;
+            display: inline-block;
+            height: 16px;
+            width: 16px;
+        }
+    </style>
 @stop
 
 @section('heading')
