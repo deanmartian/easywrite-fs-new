@@ -23,7 +23,7 @@
             <div class="col-md-8 col-sm-offset-2">
                 <div class="form-wrapper">
                     <h3 class="price">
-                        {{ $price }} kroner
+                        {{ $price }} Kronor
                     </h3>
 
                     <form class="form-theme" method="POST" action="{{ route('front.course.process-application', $course->id) }}"
