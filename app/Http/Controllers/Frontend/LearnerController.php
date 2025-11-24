@@ -2214,6 +2214,7 @@ class LearnerController extends Controller
             $courseTaken->otherPackages = Package::where('course_id', $courseTaken->package->course->id)
                 ->where('id', '>', $courseTaken->package->id)
                 ->where('is_show', 1)
+                ->where('variation', '!=', 'Editor Package')
                 ->get();
         });
 
