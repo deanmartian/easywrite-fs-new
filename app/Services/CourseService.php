@@ -408,7 +408,7 @@ class CourseService
 
         $order = Order::create($newOrder);
 
-        if ($orderType === 6) {
+        if ($orderType === 6 || $orderType === 11) {
             $order->upgrade()->create([
                 'parent' => $request->parent,
                 'parent_id' => $request->parent_id,

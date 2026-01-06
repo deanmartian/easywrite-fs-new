@@ -125,4 +125,6 @@ return [
         'api_key' => env('CLOUDCONVERT_API_KEY'),
     ],
 
+    'course_subscription_package_id' => 13
+
 ];

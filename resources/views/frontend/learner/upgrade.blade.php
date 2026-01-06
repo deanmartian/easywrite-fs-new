@@ -240,23 +240,7 @@
                         <p>
                             {{ \Carbon\Carbon::parse($webinarPakke->end_date)->format('d F Y') }}
                         </p>
-    
-                        <h2>
-                            {{ trans('site.learner.renew-automatically-text') }}
-                            <input type="checkbox" data-toggle="toggle" data-on="{{ trans('site.front.yes') }}"
-                                class="webinar-auto-register-toggle" data-off="{{ trans('site.front.no') }}"
-                                data-size="mini" id="auto-renew-toggle"
-                                @if(Auth::user()->auto_renew_courses) {{ 'checked' }} @endif>
-                        </h2>
-    
-                        <p>
-                            @if (Auth::user()->auto_renew_courses)
-                                <b>{{ trans('site.front.yes') }}</b>
-                                ({{ \Carbon\Carbon::parse($webinarPakke->end_date)->subDays(7)->format('d.m.Y') }})
-                            @else
-                                <b>{{ trans('site.front.no') }}</b>
-                            @endif
-                        </p>
+
     
                         <button class="d-none" id="autoRenewBtn" data-toggle="modal" data-target="#autoRenewModal">
                         </button>
@@ -285,9 +269,13 @@
                             //display renew button when the webinar-pakke is going to expire within a month
                         ?>
                         @if($withinAMonth)
-                            <button class="red-outline-btn" data-toggle="modal" data-target="#renewAllModal">
+                            <a href="{{ route('learner.course-taken.renew', ['id' => $webinarPakke->id]) }}"
+                                class="btn red-outline-btn">
+                                {{ trans('site.learner.renew-subscription') }}
+                            </a>
+                            {{-- <button class="red-outline-btn" data-toggle="modal" data-target="#renewAllModal">
                                 {{ trans('site.learner.renew-subscription-text') }}
-                            </button>
+                            </button> --}}
                         @endif
                     @endif
                 </div>

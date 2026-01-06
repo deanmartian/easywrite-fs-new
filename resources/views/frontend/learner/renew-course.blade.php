@@ -16,7 +16,7 @@
                 :course-taken="{{ json_encode($courseTaken) }}"
                 :current-package="{{ json_encode($currentPackage) }}"
                 :current-user="{{ json_encode($currentUser) }}">
-            </course-upgrade>
+            </course-renew>
         </div>
     </div>
 @stop

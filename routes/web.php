@@ -311,6 +311,8 @@ Route::domain($front)->group(function () {
         Route::post('/course/{id}/renew-all', [Frontend\LearnerController::class, 'courseRenewAll'])->name('learner.course.renew-all'); // Single Course Page
         Route::post('/renew-learner-courses', [Frontend\LearnerController::class, 'renewLearnerCourses'])->name('learner.renew-all-courses'); // Renew all the course of the learner in upgrade page
         Route::post('/course-renew/', [Frontend\LearnerController::class, 'courseRenew'])->name('learner.course.renew'); // Single Course Page
+        Route::get('/course-taken/{id}/renew', [Frontend\LearnerController::class, 'courseTakenRenew'])->name('learner.course-taken.renew'); // Single Course Page
+        Route::post('/course-taken/{id}/validate-form', [Frontend\LearnerController::class, 'courseTakenRenewValidate']);
         Route::get('/calendar', [Frontend\LearnerController::class, 'calendar'])->name('learner.calendar'); // Calendar Page
         Route::get('/document-converter', [Frontend\LearnerController::class, 'documentConverter'])->name('learner.document-converter');
         Route::post('/document-converter', [Frontend\LearnerController::class, 'convertDocument'])->name('learner.document-converter.convert');
@@ -1041,6 +1043,12 @@ Route::domain($admin)->group(function () {
         Route::post('/admin-status', [Backend\AdminController::class, 'adminStatus'])->name('admin.admin.status');
         Route::post('/admin/type-change', [Backend\AdminController::class, 'adminTypeChange']);
         Route::get('/admin/clear/cache', [Backend\AdminController::class, 'clearCache'])->name('admin.clear.cache');
+        Route::prefix('/admin/{user}/calendar')->name('admin.admin.calendar.')->group(function () {
+            Route::get('/', [Backend\AdminController::class, 'editorCalendar'])->name('index');
+            Route::get('/time-slots', [Backend\AdminController::class, 'fetchEditorTimeSlots'])->name('time-slots.fetch');
+            Route::post('/time-slots', [Backend\AdminController::class, 'storeEditorTimeSlot'])->name('time-slots.store');
+            Route::delete('/time-slots/{slot}', [Backend\AdminController::class, 'destroyEditorTimeSlot'])->name('time-slots.destroy');
+        });
         Route::resource('/admin', Backend\AdminController::class, [
             'names' => [
                 'index' => 'admin.admin.index',

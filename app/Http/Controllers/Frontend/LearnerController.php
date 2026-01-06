@@ -3917,6 +3917,54 @@ class LearnerController extends Controller
         return redirect()->route('learner.upgrade'); */
     }
 
+    public function courseTakenRenew($courseTakenId)
+    {
+        $courseTaken    = CoursesTaken::where('id', $courseTakenId)
+            ->where('user_id', Auth::user()->id)
+            ->first();
+        if (!$courseTaken || $courseTaken->package->course_id !== 7) {
+            return redirect()->route('learner.upgrade');
+        }
+
+        $currentPackage = $courseTaken->package;
+        $currentUser = Auth::user();
+
+        return view('frontend.learner.renew-course', compact('courseTaken', 'currentPackage', 'currentUser'));
+    }
+
+    public function courseTakenRenewValidate(Request $request, CourseService $courseService)
+    {
+        $validation = [
+            'email'         => 'required|email',
+            'first_name'    => 'required',
+            'last_name'     => 'required',
+            'street'        => 'required',
+            'zip'           => 'required',
+            'city'          => 'required',
+            'phone'         => 'required',
+        ];
+
+        $validator = \Validator::make($request->all(), $validation);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // update address
+        Address::updateOrCreate(
+            ['user_id' => \Auth::user()->id],
+            $request->only('street', 'zip', 'city', 'phone')
+        );
+
+        $request->merge([
+            'parent' => 'course-taken-renew', 
+            'parent_id' => $request->course_taken_id,
+            'is_pay_later' => 0
+        ]);
+
+        return response()->json($courseService->generateSveaCheckout($request));
+    }
+
     /**
      * Display the course upgrade page
      *
