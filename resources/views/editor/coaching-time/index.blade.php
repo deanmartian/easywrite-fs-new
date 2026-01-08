@@ -111,7 +111,11 @@
                             <thead>
                                 <tr>
                                     <th>{{ trans('site.learner.date-time') }}</th>
+                                    <th>{{ trans('site.learner-id') }}</th>
+                                    <th>{{ trans('site.front.form.email') }}</th>
+                                    <th>{{ trans('site.front.form.phone-number') }}</th>
                                     <th>{{ trans_choice('site.learners', 1) }}</th>
+                                    <th>{{ trans('site.call-type') }}</th>
                                     <th>{{ trans('site.learner.duration-text') }}</th>
                                 </tr>
                             </thead>
@@ -134,6 +138,15 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $dateLabel }} {{ $dt->format('H:i') }}</td>
+                                        <td>
+                                            {{ $booking->manuscript->user->id }}
+                                        </td>
+                                        <td>
+                                            {{ $booking->manuscript->user->email }}
+                                        </td>
+                                        <td>
+                                            {{ $booking->manuscript->user->address->phone ?? null }}
+                                        </td>
                                         <td>
                                             {{ $booking->manuscript->user->full_name }}
                                             @if ($booking->manuscript->help_with)
