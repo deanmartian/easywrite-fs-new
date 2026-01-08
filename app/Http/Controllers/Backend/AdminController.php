@@ -401,16 +401,25 @@ class AdminController extends Controller
             })
             ->orderBy('assignment_manuscript_id', 'DESC')->get();
 
+        $unassignedAssignmentManuscripts = AssignmentManuscript::whereHas('assignment', function ($query) {
+            $query->where('for_editor', 0);
+        })
+            ->with('user')
+            ->where('editor_id', 0)
+            ->where('status', 0)
+            ->get();
+
+        $unassignedShopManuscripts = ShopManuscriptsTaken::whereDoesntHave('admin')
+            ->whereNotNull('file')
+            ->whereDate('created_at', '>', '2025-01-01')
+            ->latest()->get();
+
         $unfinishedAssignments = AssignmentManuscript::whereHas('assignment', function ($query) {
             $query->where('for_editor', 0);
         })
         ->with('user')
         ->where(function ($query) {
             $query->where(function ($q) {
-                $q->where('editor_id', 0)
-                ->where('status', 0);
-            })
-            ->orWhere(function ($q) {
                 $q->where('editor_id', '!=', 0)
                 ->where('has_feedback', 0);
             });
@@ -425,7 +434,8 @@ class AdminController extends Controller
             ->latest()->get();
 
         return view('backend.yearly-calendar', compact('editor', 'assignmentManuscriptEditorCanTake',
-            'unfinishedAssignments', 'unfinishedShopManuscripts'));
+            'unfinishedAssignments', 'unfinishedShopManuscripts', 'unassignedAssignmentManuscripts',
+            'unassignedShopManuscripts'));
     }
 
     public function fikenRedirect(Request $request)
