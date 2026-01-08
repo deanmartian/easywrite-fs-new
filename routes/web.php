@@ -314,6 +314,7 @@ Route::domain($front)->group(function () {
         Route::get('/course-taken/{id}/renew', [Frontend\LearnerController::class, 'courseTakenRenew'])->name('learner.course-taken.renew'); // Single Course Page
         Route::post('/course-taken/{id}/validate-form', [Frontend\LearnerController::class, 'courseTakenRenewValidate']);
         Route::get('/calendar', [Frontend\LearnerController::class, 'calendar'])->name('learner.calendar'); // Calendar Page
+        Route::get('/calendar/export', [Frontend\LearnerController::class, 'exportCalendar'])->name('learner.calendar.export');
         Route::get('/document-converter', [Frontend\LearnerController::class, 'documentConverter'])->name('learner.document-converter');
         Route::post('/document-converter', [Frontend\LearnerController::class, 'convertDocument'])->name('learner.document-converter.convert');
         Route::get('/invoice', [Frontend\LearnerController::class, 'invoice'])->name('learner.invoice'); // Invoice Listing Page
