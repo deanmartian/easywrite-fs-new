@@ -54,7 +54,7 @@
                     @if($replay->file)
                         <div class="text-center w-100">
                             <a href="{{ url($replay->file) }}" class="d-block" download>
-                                Last ned Power Point-presentasjon
+                                {{ trans('site.download-power-point-presentation') }}
                             </a>
                         </div>
                     @endif
