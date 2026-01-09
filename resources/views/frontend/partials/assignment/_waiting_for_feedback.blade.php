@@ -116,6 +116,13 @@
                         <div class="timeline">
                             <p>
                                 {{ $assignment->description }}
+
+                                @if($feedback = $manuscript->noGroupFeedbacks->first())
+                                    <br>
+
+                                    Tilbakemelding kommer dato:
+                                    {{ FrontendHelpers::formatDate($feedback->availability) }}
+                                @endif
                             </p>
 
                             @if( end($extension) == 'pdf' || end($extension) == 'odt' )
