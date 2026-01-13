@@ -137,7 +137,7 @@ class CourseExpirationReminder extends Command
 
             $encode_email = encrypt($user_email);
             $loginLink = "<a href='".route('auth.login.email', $encode_email)
-                ."?redirect=upgrade'>Ja, jeg vil være med ett år til?</a>";
+                ."?redirect=upgrade'>".trans('site.yes-stay-for-another-year')."</a>";
             $message = str_replace('[login_link]', $loginLink, $content);
 
             $emailData = [
