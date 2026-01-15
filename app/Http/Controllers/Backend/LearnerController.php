@@ -7,6 +7,7 @@ use App\Assignment;
 use App\AssignmentAddon;
 use App\AssignmentLearnerSubmissionDate;
 use App\AssignmentGroupLearner;
+use App\AssignmentLearnerConfiguration;
 use App\AssignmentManuscript;
 use App\AssignmentTemplate;
 use App\CoachingTimerManuscript;
@@ -253,9 +254,13 @@ class LearnerController extends Controller
         $assignmentSubmissionDates = AssignmentLearnerSubmissionDate::where('user_id', $learner->id)
             ->pluck('submission_date', 'assignment_id');
 
+        $assignmentMaxWords = AssignmentLearnerConfiguration::where('user_id', $learner->id)
+            ->pluck('max_words', 'assignment_id');
+
         return view('backend.learner.show', compact('learner', 'learnerAssignments', 'emailHistories',
             'registeredWebinars', 'assignmentTemplates', 'selfPublishingList', 'learnerSelfPublishingList',
-            'timeRegisters', 'projects', 'certificates', 'projects', 'bookSaleTypes', 'tasks', 'assignmentSubmissionDates'));
+            'timeRegisters', 'projects', 'certificates', 'projects', 'bookSaleTypes', 'tasks', 'assignmentSubmissionDates',
+            'assignmentMaxWords'));
     }
 
     public function update($id, Request $request)
@@ -2390,6 +2395,42 @@ class LearnerController extends Controller
 
         return redirect()->back()->with([
             'errors' => AdminHelpers::createMessageBag('Submission date updated for the selected learner.'),
+            'alert_type' => 'success',
+            'not-former-courses' => true,
+        ]);
+    }
+
+    public function updateAssignmentMaxWords($learner_id, $assignment_id, Request $request)
+    {
+        $learner = User::find($learner_id);
+        $assignment = Assignment::find($assignment_id);
+
+        if (! $learner || ! $assignment) {
+            return redirect()->back()->with([
+                'errors' => AdminHelpers::createMessageBag('Unable to update max words.'),
+                'alert_type' => 'danger',
+                'not-former-courses' => true,
+            ]);
+        }
+
+        if ($assignment->parent === 'users') {
+            return redirect()->back()->with([
+                'errors' => AdminHelpers::createMessageBag('Max words can only be updated for course assignments.'),
+                'alert_type' => 'danger',
+                'not-former-courses' => true,
+            ]);
+        }
+
+        $learnerAssignmentConfiguration = AssignmentLearnerConfiguration::firstOrNew([
+            'assignment_id' => $assignment_id,
+            'user_id' => $learner_id,
+        ]);
+
+        $learnerAssignmentConfiguration->max_words = $request->max_words;
+        $learnerAssignmentConfiguration->save();
+
+        return redirect()->back()->with([
+            'errors' => AdminHelpers::createMessageBag('Max words updated for the selected learner.'),
             'alert_type' => 'success',
             'not-former-courses' => true,
         ]);
