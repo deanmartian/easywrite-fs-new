@@ -167,7 +167,7 @@ class CourseEmailOut extends Command
                 } else {
                     $coursesTaken = CoursesTaken::whereIn('package_id', $packages)
                     ->whereHas('user')
-                    ->whereNull('renewed_at')
+                    //->whereNull('renewed_at')
                     ->whereNotIn('user_id', $emailRecipients)
                     ->where('can_receive_email', 1)
                     ->get();
@@ -348,7 +348,7 @@ class CourseEmailOut extends Command
                         $query->whereDate('started_at', '=', $emailDate);
                         $query->orWhereDate('start_date', '=', $emailDate);
                     })
-                    ->whereNull('renewed_at')
+                    //->whereNull('renewed_at')
                     ->whereNotIn('user_id', $emailRecipients)
                     ->where('can_receive_email', 1)
                     ->get();
