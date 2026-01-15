@@ -2345,7 +2345,7 @@ class LearnerController extends Controller
 
             // add shop manuscript to user
             if (! $order->is_processed) {
-                $shopManuscriptService = new ShopManuscriptService;
+                $shopManuscriptService = app(ShopManuscriptService::class);
                 $shopManuscriptService->upgradeShopManuscript($order);
             }
 
