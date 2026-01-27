@@ -129,7 +129,7 @@ class Order extends Model
     {
         $package = $this->item;
         if (in_array($this->attributes['type'], [1, 6])) {
-            return $this->package->variation;
+            return $this->package ? $this->package->variation : 'Pakke ikke tilgjengelig (id '.$this->id.')';
         }
 
         return $package;

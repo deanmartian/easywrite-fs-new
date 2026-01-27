@@ -463,8 +463,12 @@ class AdminHelpers
         if (in_array($order->type, [1, 6])) {
             $package = Package::find($order->package_id);
             $paymentPlan = PaymentPlan::find($order->plan_id);
+
+            $packageLabel = $package?->variation ?? 'Pakke ikke tilgjengelig (id '.$order->package_id.')';
+            $planLabel = $paymentPlan?->plan ?? '';
+
             $orderDetails = "<a href='".route('admin.course.show', $order->item_id)."?section=packages'>"
-                .$package->variation.'</a>'.' - '.$paymentPlan->plan;
+                .$packageLabel.'</a>'.' - '.$planLabel;
         }
 
         if (in_array($order->type, [2, 7])) {
