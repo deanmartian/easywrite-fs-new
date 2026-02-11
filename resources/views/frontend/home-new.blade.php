@@ -47,7 +47,7 @@
                     </button> --}}
                 </div>
                 <div class="col-md-6">
-                    <img class="w-100" src="{{ asset('/images/cecilie.jpg')}}">
+                    <img class="w-100" src="{{ asset('/images/main-new.jpeg')}}" style="height: 557px; object-fit:cover">
                 </div>
             </div>
         </div> <!-- end container -->
