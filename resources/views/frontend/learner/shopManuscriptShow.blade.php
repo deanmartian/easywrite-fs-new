@@ -62,13 +62,12 @@
 							<span class="font-barlow-regular">{{ trans('site.learner.words-text') }}</span>: {{ basename($shopManuscriptTaken->words) }}<br />
 						@endif
 							<span class="font-barlow-regular">{{ trans('site.learner.date-uploaded') }}</span>:
-							{{ \App\Http\FrontendHelpers::formatDate($shopManuscriptTaken->created_at) }}<br />
-							<br>
+							{{ $shopManuscriptTaken->manuscript_uploaded_date ?
+								\App\Http\FrontendHelpers::formatDate($shopManuscriptTaken->manuscript_uploaded_date) : '' }}<br />
 							@if ($shopManuscriptTaken->synopsis)
-								<a href="{{ route('learner.shop-manuscript.download', [$shopManuscriptTaken->id, 'synopsis']) }}">
-									{{ trans('site.download-synopsis') }}
+								<a href="{{ route('learner.shop-manuscript.download', [$shopManuscriptTaken->id, 'synopsis']) }}" class="manuscript-synopsis-link">
+									<i class="fa fa-file-alt"></i> {{ trans('site.download-synopsis') }}
 								</a>
-								<br>
 							@endif
 						<br />
 						<h3>
