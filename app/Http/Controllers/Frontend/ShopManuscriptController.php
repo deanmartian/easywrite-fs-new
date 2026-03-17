@@ -129,7 +129,7 @@ class ShopManuscriptController extends Controller
         }
 
         if ($word_count == 0) {
-            $customErrors = ['manuscript' => ['The manuscript word count is invalid.']];
+            $customErrors = ['manuscript' => [trans('site.invalid-manuscript-word-count')]];
             $validator = FacadeValidator::make([], []);
             $validator->validate(); // Perform validation without rules
             $validator->errors()->merge($customErrors);
@@ -394,7 +394,7 @@ class ShopManuscriptController extends Controller
 
             if (! in_array($extension, $extensions)) {
                 return redirect()->back()->withInput()->with(
-                    'manuscript_test_error', 'Invalid file format. Allowed formats are PDF, DOC, DOCX, ODT'
+                    'manuscript_test_error', trans('site.invalid-file-format')
                 );
             }
 
@@ -407,7 +407,7 @@ class ShopManuscriptController extends Controller
                 $this->removeUploadedFile($uploadedManuscript);
 
                 return redirect()->back()->withInput()->with(
-                    'manuscript_test_error', 'Kunne ikke lese denne filen. Prøv igjen med en gyldig fil.'
+                    'manuscript_test_error', trans('site.could-not-read-file-try-again')
                 );
             }
 
@@ -612,7 +612,7 @@ class ShopManuscriptController extends Controller
 
             if (! in_array($extension, $extensions)) {
                 return redirect()->back()->with(
-                    'manuscript_test_error', 'Invalid file format. Allowed formats are PDF, DOC, DOCX, ODT'
+                    'manuscript_test_error', trans('site.invalid-file-format')
                 );
             }
 
@@ -622,7 +622,7 @@ class ShopManuscriptController extends Controller
 
             if (! $manuscriptPath || $word_count <= 0) {
                 return redirect()->back()->with(
-                    'manuscript_test_error', 'Kunne ikke lese denne filen. Prøv igjen med en gyldig fil.'
+                    'manuscript_test_error', trans('site.could-not-read-file-try-again')
                 );
             }
 
@@ -635,7 +635,7 @@ class ShopManuscriptController extends Controller
 
             if (! in_array($extension, $extensions)) {
                 return redirect()->back()->with(
-                    'manuscript_test_error', 'Invalid file format. Allowed formats are PDF, DOC, DOCX, ODT'
+                    'manuscript_test_error', trans('site.invalid-file-format')
                 );
             }
 
@@ -729,7 +729,7 @@ class ShopManuscriptController extends Controller
 
             if (! in_array($extension, $extensions)) {
                 return redirect()->back()->with(
-                    'manuscript_test_error', 'Invalid file format. Allowed formats are PDF, DOC, DOCX, ODT'
+                    'manuscript_test_error', trans('site.invalid-file-format')
                 );
             }
 
@@ -764,7 +764,7 @@ class ShopManuscriptController extends Controller
 
             if (! in_array($extension, $extensions)) {
                 return redirect()->back()->with(
-                    'manuscript_test_error', 'Invalid file format. Allowed formats are PDF, DOC, DOCX, ODT'
+                    'manuscript_test_error', trans('site.invalid-file-format')
                 );
             }
 
@@ -774,7 +774,7 @@ class ShopManuscriptController extends Controller
 
             if (! $manuscriptPath || $word_count <= 0) {
                 return redirect()->back()->with(
-                    'manuscript_test_error', 'Kunne ikke lese denne filen. Prøv igjen med en gyldig fil.'
+                    'manuscript_test_error', trans('site.could-not-read-file-try-again')
                 );
             }
 
@@ -789,7 +789,7 @@ class ShopManuscriptController extends Controller
 
             if (! in_array($extension, $extensions)) {
                 return redirect()->back()->with(
-                    'manuscript_test_error', 'Invalid file format. Allowed formats are PDF, DOC, DOCX, ODT'
+                    'manuscript_test_error', trans('site.invalid-file-format')
                 );
             }
 
@@ -1248,7 +1248,7 @@ class ShopManuscriptController extends Controller
 
             if (! in_array($extension, $extensions)) {
                 return redirect()->back()->withInput()->with(
-                    'manuscript_test_error', 'Invalid file format. Allowed formats are PDF, DOC, DOCX, ODT'
+                    'manuscript_test_error', trans('site.invalid-file-format')
                 );
             }
 
@@ -1384,16 +1384,22 @@ class ShopManuscriptController extends Controller
 
         if ($wordcount > 500) {
             return redirect()->back()->withInput()->with([
-                'errors' => AdminHelpers::createMessageBag('The content may not be greater than 500 words.'),
+                'errors' => AdminHelpers::createMessageBag(trans('site.content-max-500-words')),
             ]);
         }
 
         $existing_emails = FreeManuscript::all()->pluck('email')->toArray();
+
+        $existingMessage = str_replace(
+            ['_start_link_', '_end_link_'],
+            ['<a href="mailto:post@easywrite.se">', '</a>'],
+            trans('site.already-avail-free-manuscript-message')
+        );
+
         // prevent user from sending multiple manuscript
         if (in_array($request->email, $existing_emails)) {
             return redirect()->back()->withInput()->with([
-                'errors' => AdminHelpers::createMessageBag('Beklager, men du har allerede benyttet deg av dette gratistilbudet
-Er det feil må du sende en mail til <a href="mailto:post@easywrite.se">post@easywrite.se</a>'),
+                'errors' => AdminHelpers::createMessageBag($existingMessage),
             ]);
         }
 

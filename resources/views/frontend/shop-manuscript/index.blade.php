@@ -130,14 +130,22 @@
                             <label for="word-count-file" class="file-upload-label">
                                 <div class="file-upload" id="word-count-upload-area">
                                     <div class="file-upload-text" id="word-count-upload-text">
-                                        <a href="javascript:void(0)"
-                                        class="word-count-file-trigger file-upload-btn">Klikk her</a>
-                                        for å laste opp filen din eller <br>
-                                        dra filen din hit.
+                                        @php
+                                            $search_string = [
+                                                '[start_link]', '[end_link]'
+                                            ];
+                                            $replace_string = [
+                                                '<a href="javascript:void(0)" class="word-count-file-trigger file-upload-btn">','</a>'
+                                            ];
+                                            $buttonLink = str_replace($search_string, $replace_string, trans('site.click-or-drag-to-upload-file'))
+                                        @endphp
+                                        {!! $buttonLink !!}
                                     </div>
                                 </div>
                             </label>
-                            <p id="word-count-conversion-message" class="text-info mt-2 d-none">Konverterer dokumentet… Vennligst vent.</p>
+                            <p id="word-count-conversion-message" class="text-info mt-2 d-none">
+                                {{ trans('site.converting-document-please-wait') }}
+                            </p>
                             <div id="word-count-conversion-error" class="alert alert-danger d-none mt-2" role="alert"></div>
                             @error('manuscript')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -461,6 +469,13 @@
 @section('scripts')
     <script src="https://unpkg.com/mammoth@1.4.21/mammoth.browser.min.js"></script>
     <script>
+        let translations = {
+            convertingPleaseWait : "{{ trans('site.converting-document-please-wait') }}",
+            couldNotConvertTryAgain : "{{ trans('site.could-not-convert-file-please-try-again') }}",
+            releaseToUpload : "{{ trans('site.release-to-upload') }}",
+                
+        };
+
         $(document).ready(function(){
             const getFileExtension = (fileName) => {
                 if (!fileName) {
@@ -492,7 +507,7 @@
             const wordCountProcessButton = wordCountFormElement
                 ? wordCountFormElement.querySelector('.word-count-process-btn')
                 : null;
-            const conversionMessageText = 'Konverterer dokumentet… Vennligst vent.';
+            const conversionMessageText = translations.convertingPleaseWait;
             const wordCountConversionMessageElement = document.getElementById('word-count-conversion-message');
             const wordCountConversionErrorElement = document.getElementById('word-count-conversion-error');
             let isConvertingWordCountFile = false;
@@ -522,7 +537,7 @@
             const showWordCountConversionError = (message) => {
                 if (wordCountConversionErrorElement) {
                     wordCountConversionErrorElement.textContent = message
-                        || 'Kunne ikke konvertere filen. Prøv igjen.';
+                        || translations.couldNotConvertTryAgain;
                     wordCountConversionErrorElement.classList.remove('d-none');
                 }
             };
@@ -653,9 +668,9 @@
                             error.response = error.response || {};
                             error.response.data = {
                                 errors: {
-                                    manuscript: ['Kunne ikke konvertere filen. Prøv igjen.'],
+                                    manuscript: [translations.couldNotConvertTryAgain],
                                 },
-                                message: 'Kunne ikke konvertere filen. Prøv igjen.'
+                                message: translations.couldNotConvertTryAgain
                             };
                         }
 
@@ -680,7 +695,7 @@
                     : null;
 
                 if (!response.ok) {
-                    const error = new Error('Kunne ikke konvertere filen. Prøv igjen.');
+                    const error = new Error(translations.couldNotConvertTryAgain);
                     let errorData = null;
 
                     try {
@@ -697,9 +712,9 @@
                         status: response.status,
                         data: errorData || {
                             errors: {
-                                manuscript: ['Kunne ikke konvertere filen. Prøv igjen.'],
+                                manuscript: [translations.couldNotConvertTryAgain],
                             },
-                            message: 'Kunne ikke konvertere filen. Prøv igjen.'
+                            message: translations.couldNotConvertTryAgain
                         }
                     };
 
@@ -715,7 +730,7 @@
 
             const getErrorMessageFromConversion = (error) => {
                 if (!error) {
-                    return 'Kunne ikke konvertere filen. Prøv igjen.';
+                    return translations.couldNotConvertTryAgain;
                 }
 
                 if (error.response && error.response.data) {
@@ -734,7 +749,7 @@
                     return error.message;
                 }
 
-                return 'Kunne ikke konvertere filen. Prøv igjen.';
+                return translations.couldNotConvertTryAgain;
             };
 
             const assignFilesToInput = (input, file) => {
@@ -812,7 +827,7 @@
                 };
 
                 reader.onerror = () => {
-                    reject(reader.error || new Error('Kunne ikke lese dokumentet.'));
+                    reject(reader.error || new Error(translations.couldNotConvertTryAgain));
                 };
 
                 try {
