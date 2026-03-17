@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="h1">
-                    Redaktører
+                    {{ trans_choice('site.editors', 2) }}
                 </div>
                 <div class="stab-row">
                     <ul>
