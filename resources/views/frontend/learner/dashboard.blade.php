@@ -14,7 +14,7 @@
     <div class="learner-container learner-dashboard-wrapper">
         <div class="container">
             <h1 class="page-title">
-                Dashboard
+                {{ trans('site.author-portal-menu.dashboard') }}
             </h1>
             <div class="row">
                 <div class="col-lg-8">
@@ -116,7 +116,7 @@
                                             // remove if the above code is uncomment
                                             $balance = $invoice->fiken_balance;
                                             $status = $invoice->fiken_is_paid === 1 ? strtoupper(trans('site.learner.paid'))
-                                                    : ($invoice->fiken_is_paid === 2 ? strtoupper('sendt til inkasso')
+                                                    : ($invoice->fiken_is_paid === 2 ? strtoupper(trans('site.send-to-debt-collection'))
                                                     : strtoupper(trans('site.learner.unpaid')));
                                         ?>
                                         <tr>
@@ -140,14 +140,16 @@
                                                     </span>
                                                 @elseif($invoice->fiken_is_paid === 2)
                                                     <span class="label label-warning text-uppercase label-rounded">
-                                                        {{ strtoupper('sendt til inkasso')  }}
+                                                        {{ strtoupper(trans('site.send-to-debt-collection'))  }}
                                                     </span>
                                                 @elseif($invoice->fiken_is_paid === 3)
                                                     <span class="label label-violet text-uppercase">
-                                                        {{ strtoupper('Kreditert')  }}
+                                                        {{ strtoupper(trans('site.credited'))  }}
                                                     </span>
                                                 @else
-                                                    <span class="label label-danger label-rounded">UBETALT</span>
+                                                    <span class="label label-danger label-rounded">
+                                                        {{ strtoupper(trans('site.learner.unpaid'))  }}
+                                                    </span>
                                                 @endif
                                             </td>
                                         </tr>
@@ -477,7 +479,7 @@
                                                         @else
                                                             <a href="javascript:void(0)"
                                                             class="btn w-100 rounded-0 btn-success disabled" disabled>
-                                                                Påmelding kommer
+                                                                {{ trans('site.registration-is-coming') }}
                                                             </a>
                                                         @endif
                                                     @endif
@@ -594,7 +596,7 @@
                                                         @else
                                                             <a href="javascript:void(0)"
                                                             class="btn w-100 rounded-0 btn-success disabled" disabled>
-                                                                Påmelding kommer
+                                                                {{ trans('site.registration-is-coming') }}
                                                             </a>
                                                         @endif
                                                     @endif
