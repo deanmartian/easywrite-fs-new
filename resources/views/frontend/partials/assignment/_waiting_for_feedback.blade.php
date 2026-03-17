@@ -5,6 +5,10 @@
             $manuscript = $assignment->manuscripts->where('user_id', Auth::user()->id)->first();
             $extension = $manuscript ? explode('.', basename($manuscript->filename)) : '';
             $submission_date_formatted = $assignment->submission_date;
+            $expected_finish = 
+                                $manuscript->expected_finish
+                                ?? $assignment->expected_finish
+                                ?? $manuscript->expected_finish;
             if (!\App\Http\AdminHelpers::isDateWithFormat('M d, Y h:i A', $assignment->submission_date)) {
                 $coursesTaken = Auth::user()->coursesTaken()->get()->toArray();
                 $allowed_packages = $assignment->allowed_package ?
@@ -29,7 +33,7 @@
                             <div class="col-md-3">
                                 <i class="fa fa-calendar-check"></i>
                             </div>
-                            <div class="col-md-9 pl-0">
+                            <div class="col-md-9 ps-0">
                                 <h3>
                                     {{ \App\Http\FrontendHelpers::formatDateTimeNor(
                                         $submission_date_formatted) }}
@@ -71,7 +75,7 @@
                             </div>
                         </div>
 
-                        @if ($assignment->editor_expected_finish)
+                        @if ($expected_finish)
                             <div class="row">
                                 <div class="col-md-6">
                                     <p>
@@ -80,7 +84,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p>
-                                        {{ $assignment->editor_expected_finish }}
+                                        {{ \App\Http\FrontendHelpers::formatDate(
+                                        $expected_finish) }}
                                     </p>
                                 </div>
                             </div>
