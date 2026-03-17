@@ -706,6 +706,7 @@ Route::domain($admin)->group(function () {
         Route::post('learner/register', [Backend\LearnerController::class, 'registerLearner'])->name('admin.learner.register');
         Route::get('learner/export-vipps-efaktura', [Backend\LearnerController::class, 'exportLearnerWithVipps']);
         Route::get('learner/{id}/email-history', [Backend\LearnerController::class, 'learnerEmailHistory'])->name('admin.learner.email-history');
+        Route::get('learner/{id}/email-history/partial', [Backend\LearnerController::class, 'learnerEmailHistoryPartial'])->name('admin.learner.email-history.partial');
         Route::post('learner/{id}/set-disable-date', [Backend\LearnerController::class, 'setLearnerDisableDate'])->name('admin.learner.set_disable_date');
         Route::delete('/learner/{id}/remove-disable-date', [Backend\LearnerController::class, 'removeLearnerDisableDate'])->name('admin.learner.remove_disable_date');
         Route::resource('learner', Backend\LearnerController::class, [
@@ -757,6 +758,7 @@ Route::domain($admin)->group(function () {
         Route::post('other-service/{id}/assign-editor/{type}', [Backend\LearnerController::class, 'otherServiceAssignEditor'])->name('admin.other-service.assign-editor');
         Route::post('other-service/{id}/delete/{type}', [Backend\LearnerController::class, 'deleteOtherService'])->name('admin.other-service.delete');
         Route::post('coaching-timer/{id}/approve', [Backend\LearnerController::class, 'approveCoachingTimer'])->name('admin.coaching-timer.approve');
+        Route::get('coaching-timer/editor/{editor}/available-slots', [Backend\LearnerController::class, 'editorAvailableSlots'])->name('admin.coaching-time.editor-available-slots');
         Route::post('learner/{id}/add-coaching-timer', [Backend\LearnerController::class, 'addCoachingTimer'])->name('admin.learner.add-coaching-timer');
         Route::post('learner/{id}/add-diploma', [Backend\LearnerController::class, 'addDiploma'])->name('admin.learner.add-diploma');
         Route::post('diploma/{id}/edit', [Backend\LearnerController::class, 'editDiploma'])->name('admin.learner.edit-diploma');

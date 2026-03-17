@@ -4394,7 +4394,7 @@
 	</div>
 </div>
 
-<div id="addCoachingSessionModal" class="modal fade" role="dialog" data-backdrop="static">
+<div id="addCoachingSessionModal" class="modal fade coaching-session-modal" role="dialog" data-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -4413,27 +4413,40 @@
 							   application/pdf, application/vnd.oasis.opendocument.text">
 					</div>
 					
+                                        <div class="form-group">
+                                                <label>{{ trans('site.session-length') }}</label>
+                                                <select name="plan_type" class="form-control" required>
+                                                        <option value="" disabled="" selected>-- Select --</option>
+                                                        <option value="2">30 min</option>
+                                                        <option value="1">1 hr</option>
+                                                </select>
+                                        </div>
+
 					<div class="form-group">
-						<label>{{ trans('site.session-length') }}</label>
-						<select name="plan_type" class="form-control" required>
-							<option value="" disabled="" selected>-- Select --</option>
-							<option value="2">30 min</option>
-							<option value="1">1 hr</option>
+						<label>{{ trans('site.call-type') }}</label>
+						<select name="call_type" class="form-control" required>
+							<option value="phone">{{ trans('site.phone-call') }}</option>
+							<option value="video">{{ trans('site.video-call') }}</option>
 						</select>
 					</div>
 
-					<div class="form-group">
-						<label>{{ ucwords(trans('site.assign-to')) }}</label>
-						<select name="editor_id" class="form-control select2">
-							<option value="" disabled="" selected>-- Select Editor --</option>
-							@foreach( AdminHelpers::editorList() as $editor )
-								<option value="{{ $editor->id }}">{{ $editor->full_name }}</option>
-							@endforeach
-						</select>
-					</div>
+                                        <div class="form-group">
+                                                <label>{{ ucwords(trans('site.assign-to')) }}</label>
+                                                <select name="editor_id" class="form-control select2" id="coaching-editor-select">
+                                                        <option value="" disabled="" selected>-- Select Editor --</option>
+                                                        @foreach( App\User::whereIn('role', array(1,3))->orderBy('created_at', 'desc')->get() as $editor )
+                                                                <option value="{{ $editor->id }}">{{ $editor->full_name }}</option>
+                                                        @endforeach
+                                                </select>
+                                        </div>
 
-					<div class="form-group">
-						<label>{{ trans('site.send-invoice') }}</label> <br>
+                                        <div class="form-group d-none editor-time-slots-container" id="editor-time-slots-container">
+                                                <label>Available Time Slots</label>
+                                                <div class="editor-time-slots" id="editor-time-slots"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                                <label>{{ trans('site.send-invoice') }}</label> <br>
 						<input type="checkbox" data-toggle="toggle" data-on="Yes" data-off="No"
 							   name="send_invoice">
 					</div>
@@ -5225,14 +5238,107 @@
         delete_course : "{!! trans('site.delete-from-webinar-pakke-question') !!}"
     };
 
-	jQuery(document).ready(function(){
+    const coachingModals = {};
+
+        jQuery(document).ready(function(){
 
         // tinymce editor config and intitalization
 
-		$(".showEmailBtn").click(function(){
-		   let modal = $("#showEmailModal");
-		   let message = $(this).data('message');
-		   modal.find('.modal-body').html(message);
+        const slotsBaseUrl = '{{ url('/coaching-timer/editor') }}';
+
+        function initCoachingModal(modal) {
+            const timeSlotsContainer = modal.find('.editor-time-slots-container');
+            const timeSlotsList = modal.find('.editor-time-slots');
+            const planTypeInput = modal.find('[name=plan_type]');
+            const planTypeLabel = modal.find('.plan-type-label');
+            const editorSelect = modal.find('select[name=editor_id]');
+
+            function showSlotMessage(message, isError = false) {
+                timeSlotsContainer.removeClass('d-none');
+                const cssClass = isError ? 'text-danger' : 'text-muted';
+                timeSlotsList.html('<p class="' + cssClass + '">' + message + '</p>');
+            }
+
+            function loadEditorSlots(selectedSlotId = null) {
+                const editorId = editorSelect.val();
+                const planType = planTypeInput.val();
+
+                timeSlotsList.empty();
+
+                if (!editorId) {
+                    timeSlotsContainer.addClass('d-none');
+                    timeSlotsList.empty();
+                    return;
+                }
+
+                if (!planType) {
+                    showSlotMessage('Select a session length to see available time slots.');
+                    return;
+                }
+
+                showSlotMessage('Loading...');
+
+                $.getJSON(slotsBaseUrl + '/' + editorId + '/available-slots', { plan_type: planType })
+                    .done(function(response) {
+                        timeSlotsList.empty();
+
+                        if (!response.slots.length) {
+                            showSlotMessage('No available time slots for this editor.');
+                            return;
+                        }
+
+                        timeSlotsContainer.removeClass('d-none');
+
+                        $.each(response.slots, function(index, slot) {
+                            const slotId = 'editor-slot-' + modal.attr('id') + '-' + slot.id;
+                            const isSelected = selectedSlotId && parseInt(selectedSlotId, 10) === slot.id ? ' checked' : '';
+                            const radio = [
+                                '<div class="radio">',
+                                    '<label for="' + slotId + '">',
+                                        '<input type="radio" name="editor_time_slot_id" id="' + slotId + '" value="' + slot.id + '"' + isSelected + '>',
+                                        ' ',
+                                        slot.date + ' ' + slot.time + ' (' + slot.duration + ' min)',
+                                    '</label>',
+                                '</div>'
+                            ].join('');
+
+                            timeSlotsList.append(radio);
+                        });
+                    })
+                    .fail(function() {
+                        showSlotMessage('Unable to load available time slots.', true);
+                    });
+            }
+
+            editorSelect.on('change', function() {
+                loadEditorSlots(modal.data('selectedSlotId'));
+            });
+
+            modal.on('show.bs.modal', function () {
+                loadEditorSlots(modal.data('selectedSlotId'));
+            });
+
+            modal.on('hidden.bs.modal', function () {
+                modal.removeData('selectedSlotId');
+                editorSelect.val(null).trigger('change');
+                planTypeInput.val('');
+                planTypeLabel.text('');
+                timeSlotsList.empty();
+                timeSlotsContainer.addClass('d-none');
+            });
+
+            return loadEditorSlots;
+        }
+
+        $('.coaching-session-modal').each(function () {
+            const modal = $(this);
+            coachingModals[modal.attr('id')] = initCoachingModal(modal);
+        });
+
+                $(".showEmailBtn").click(function(){
+                   let modal = $("#showEmailModal");
+                   let message = $(this).data('message');
+                   modal.find('.modal-body').html(message);
 		});
 
 		$('.defaultAllowAccessBtn').click(function(){
@@ -5592,9 +5698,37 @@
         modal.find('select').val(editor);
         modal.find('form').attr('action', action);
 
-		if (editor) {
-			modal.find('form').find('select[name=editor_id]').val(editor.id).trigger('change');
-		}
+                if (editor) {
+                        modal.find('form').find('select[name=editor_id]').val(editor.id).trigger('change');
+                }
+    });
+
+	$(".editCallTypeBtn").click(function(){
+		let action = $(this).data('action');
+        let callType = $(this).data('call_type');
+        let modal = $('#editCallTypeModal');
+
+		modal.find('select').val(callType);
+        modal.find('form').attr('action', action);
+	});
+
+    $('.assignCoachingSessionBtn').click(function(){
+        const button = $(this);
+        const action = button.data('action');
+        const planType = button.data('plan-type') || '';
+        const modal = $('#assignCoachingSessionModal');
+        const planTypeText = planType === 1 || planType === '1' ? '1 hr' : planType === 2 || planType === '2' ? '30 min' : '';
+
+        modal.find('form').attr('action', action);
+        modal.data('selectedSlotId', button.data('selected-slot'));
+
+        modal.find('[name=plan_type]').val(planType);
+        modal.find('.plan-type-label').text(planTypeText);
+        modal.find('select[name=editor_id]').val(button.data('editor-id') || '').trigger('change');
+
+        if (coachingModals[modal.attr('id')]) {
+            coachingModals[modal.attr('id')](modal.data('selectedSlotId'));
+        }
     });
 
     $(".setReplayBtn").click(function(){
@@ -5609,9 +5743,17 @@
         modal.find('form').attr('action', action);
 	});
 
-	$(".resendEmailHistoryBtn").click(function(){
-		let record = $(this).data('record');
+	document.addEventListener("click", function(event) {
+		let button = event.target.closest(".resendEmailHistoryBtn");
+		if (!button) {
+			return;
+		}
+
+		let record = $(button).data('record') || {};
 		let modal = $("#resendEmailHistoryModal");
+		if (typeof triggerLoadTinymce === 'function') {
+			triggerLoadTinymce($(button).data('target') || '#resendEmailHistoryModal');
+		}
 
 		modal.find("[name=parent]").val(record.parent);
 		modal.find("[name=parent_id]").val(record.parent_id);
@@ -5620,13 +5762,43 @@
 		modal.find("[name=from_email]").val(record.from_email);
 		//modal.find("[name=recipient]").val(record.recipient_email);
 
-console.log(record);
-		tinymce.get('sendEmailHistoryEditor').execCommand('mceRefresh');
-		setTimeout(function(){
-			console.log("inside set timeout");
-			console.log(record.message);
-            tinymce.activeEditor.setContent(record.message);
-		}, 200);
+		console.log(record);
+		modal.find("#sendEmailHistoryEditor").val(record.message || '');
+
+		let editor = tinymce.get('sendEmailHistoryEditor');
+		if (editor) {
+			editor.execCommand('mceRefresh');
+			editor.setContent(record.message || '');
+		} else {
+			setTimeout(function(){
+				let retryEditor = tinymce.get('sendEmailHistoryEditor');
+				if (retryEditor) {
+					retryEditor.execCommand('mceRefresh');
+					retryEditor.setContent(record.message || '');
+				}
+			}, 200);
+		}
+	});
+
+	$(function() {
+		let emailHistoryUrl = "{{ route('admin.learner.email-history.partial', $learner->id) }}";
+		let emailHistoryContainer = $("#learner-email-history");
+
+		$.get(emailHistoryUrl)
+			.done(function(html) {
+				emailHistoryContainer.html(html);
+
+				emailHistoryContainer.find(".dt-table").DataTable({
+					"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+					pageLength: 10,
+					"aaSorting": []
+				});
+			})
+			.fail(function() {
+				emailHistoryContainer.html(
+					"<div class='text-center text-danger' style='padding: 20px;'>Unable to load email history.</div>"
+				);
+			});
 	});
 
     $(".booksForSaleBtn").click(function() {
@@ -5931,7 +6103,7 @@ console.log(record);
 
         setTimeout(function(){
             tinymce.activeEditor.setContent(fields.message);
-		}, 200);
+	}, 200);
 	});
 
     $(".deletePrivateMessageBtn").click(function(){
@@ -6073,6 +6245,14 @@ console.log(record);
         modal.find('[name=submission_date]').val(submission_date);
 	});
 
+	$(".editEditorExpectedFinishBtn").click(function(){
+		let editor_expected_finish = $(this).data('editor_expected_finish');
+        let modal = $('#editEditorExpectedFinishModal');
+        let action = $(this).data('action');
+        modal.find('form').attr('action', action);
+        modal.find('[name=editor_expected_finish]').val(editor_expected_finish);
+	});
+
     $(".editAvailableDateBtn").click(function() {
         let available_date = $(this).data('available_date');
         let modal = $('#editAvailableDateModal');
@@ -6103,6 +6283,7 @@ console.log(record);
 			modal.find('[name=allow_up_to]').val(allow_up_to);
 		}
 	});
+
 
 
 	$(document).on("change", ".disable-learner-toggle", function() {
