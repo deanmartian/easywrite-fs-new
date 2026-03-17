@@ -1916,6 +1916,25 @@ class LearnerController extends Controller
         return redirect()->back();
     }
 
+    public function otherServiceChangeCallType($service_id, $service_type, Request $request)
+    {
+        if ($service_type == 1 || $service_type == 2 || $service_type == 3) {
+            if ($service_type == 3) {
+                $timer = CoachingTimerManuscript::find($service_id);
+                $timer->call_type = $request->call_type;
+                $timer->save();
+            }
+
+            return redirect()->back()->with([
+                'errors' => AdminHelpers::createMessageBag(trans('site.call-type-updated-success')),
+                'alert_type' => 'success',
+                'not-former-courses' => true,
+            ]);
+        }
+
+        return redirect()->back();
+    }
+
     public function deleteOtherService($service_id, $service_type): RedirectResponse
     {
         if ($service_type == 1 || $service_type == 2 || $service_type == 3) {

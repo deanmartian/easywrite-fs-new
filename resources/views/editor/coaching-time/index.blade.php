@@ -157,6 +157,7 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td>{{ $booking->manuscript->call_type_label }}</td>
                                         <td>{{ $booking->slot->duration }} min</td>
                                     </tr>
                                 @empty

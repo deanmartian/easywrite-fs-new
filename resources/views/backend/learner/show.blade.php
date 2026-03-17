@@ -1701,6 +1701,7 @@
 							{{--<th>{{ trans('site.learner-suggestion') }}</th>
 							<th>{{ trans('site.admin-suggestion') }}</th>--}}
 							<th>{{ trans('site.approved-date') }}</th>
+							<th>{{ trans('site.call-type') }}</th>
 							<th>{{ trans('site.assigned-to') }}</th>
 							<th>{{ trans('site.replay') }}</th>
 							<th>{{ trans('site.status') }}</th>

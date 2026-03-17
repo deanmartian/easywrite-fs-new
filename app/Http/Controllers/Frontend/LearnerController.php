@@ -6325,6 +6325,7 @@ class LearnerController extends Controller
             'coaching_timer_id'   => 'required|exists:coaching_timer_manuscripts,id',
             'editor_time_slot_id' => 'required|exists:editor_time_slots,id',
             'help_with'           => 'nullable|string',
+            'call_type'           => 'required|in:phone,video',
         ]);
 
         $timer = CoachingTimerManuscript::find($data['coaching_timer_id']);
@@ -6360,6 +6361,7 @@ class LearnerController extends Controller
                 $timer->help_with = $data['help_with'] ?? null;
                 $timer->editor_id = $slot->editor_id;
                 $timer->editor_time_slot_id = $slot->id;
+                $timer->call_type = $data['call_type'];
                 $timer->save();
             });
         } catch (\RuntimeException $e) {
@@ -6413,7 +6415,7 @@ class LearnerController extends Controller
                         'email_subject' => $editorTemplate->subject,
                         'email_message' => $editorContent,
                         'from_name' => '',
-                        'from_email' => $editorTemplate->from_email ?: 'post@easywrite.se',
+                        'from_email' => $editorTemplate->from_email ?: 'post@forfatterskolen.no',
                         'attach_file' => null,
                     ];
                     $toEditor = $timer->editor->email;
