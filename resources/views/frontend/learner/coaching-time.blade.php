@@ -301,6 +301,11 @@
 
 @section('scripts')
 <script>
+    let translations = {
+        pleaseWait : "{{ trans('site.please-wait') }}"
+               
+    };
+    
     document.addEventListener('DOMContentLoaded', function () {
         var toggle = document.getElementById('toggle-sessions');
         if (!toggle) {
