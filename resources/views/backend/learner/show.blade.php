@@ -1797,27 +1797,53 @@
 									@endif
 								</td>-->
 								<td>
-									{{ $coachingTimer->approved_date ?
-                                    \App\Http\FrontendHelpers::formatToYMDtoPrettyDate($coachingTimer->approved_date)
-                                     : ''}}
+									@if ($coachingTimer->timeSlot)
+											@php
+													$slotStart = \Carbon\Carbon::parse(
+															"{$coachingTimer->timeSlot->date} {$coachingTimer->timeSlot->start_time}",
+															'UTC'
+													)->setTimezone(config('app.timezone'));
+											@endphp
 
+											{{ \App\Http\FrontendHelpers::formatToYMDtoPrettyDate($slotStart) }}
+									@elseif($coachingTimer->approved_date)
+											{{ \App\Http\FrontendHelpers::formatToYMDtoPrettyDate($coachingTimer->approved_date) }}
+									@endif
+
+									{{--
 									<button data-target="#setCoachingApprovedDateModal" class="btn btn-success btn-xs setCoachingApprovedDateBtn"
-									   data-toggle="modal" data-approved_date="{{ $coachingTimer->approved_date }}"
-									   data-action="{{ route('admin.other-service.coaching-timer.set-coaching-approve-date', $coachingTimer->id) }}"
+										data-toggle="modal" data-approved_date="{{ $coachingTimer->approved_date }}"
+										data-action="{{ route('admin.other-service.coaching-timer.set-coaching-approve-date', $coachingTimer->id) }}"
 									style="display: block">
-										Set approve date
+											Set approve date
+									</button>
+									--}}
+								</td>
+								<td>
+									{{ $coachingTimer->call_type_label }} <br>
+									<button class="btn btn-xs btn-primary editCallTypeBtn" data-toggle="modal" 
+										data-target="#editCallTypeModal"
+										data-action="{{ route('admin.other-service.change-call-type', ['id' => $coachingTimer->id, 'type' => 3]) }}"
+										data-call_type="{{ $coachingTimer->call_type }}">
+										{{ trans('site.edit') }}
 									</button>
 								</td>
 								<td>
 									@php
 										$activeEditors = AdminHelpers::editorList()->pluck('id')->toArray();
 									@endphp
-									@if ($coachingTimer->editor_id && in_array($coachingTimer->editor_id, $activeEditors))
-										{{ $coachingTimer->editor->full_name }}
-									@else
-										<button class="btn btn-xs btn-warning assignEditorBtn" data-toggle="modal" data-target="#assignEditorModal" data-action="{{ route('admin.other-service.assign-editor', ['id' => $coachingTimer->id, 'type' => 3]) }}">{{ trans('site.assign-editor') }}</button>
-									@endif
-								</td>
+                                                                        @if ($coachingTimer->editor_id && in_array($coachingTimer->editor_id, $activeEditors))
+                                                                                {{ $coachingTimer->editor->full_name }}
+                                                                        @else
+                                                                                <button class="btn btn-xs btn-warning assignCoachingSessionBtn"
+                                                                                        data-toggle="modal"
+                                                                                        data-target="#assignCoachingSessionModal"
+                                                                                        data-action="{{ route('admin.other-service.assign-editor', ['id' => $coachingTimer->id, 'type' => 3]) }}"
+                                                                                        data-plan-type="{{ $coachingTimer->plan_type }}">
+                                                                                        {{ trans('site.assign-editor') }}
+                                                                                </button>
+                                                                        @endif
+                                                                </td>
 								<td>
 									@if ($coachingTimer->replay_link)
 										<a href="{{ $coachingTimer->replay_link }}" target="_blank">
