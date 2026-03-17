@@ -4250,6 +4250,74 @@
 	</div>
 </div>
 
+<div id="editCallTypeModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form method="POST" action="" onsubmit="disableSubmit(this)">
+					{{ csrf_field() }}
+					<div class="form-group">
+						<label>{{ trans('site.call-type') }}</label>
+						<select name="call_type" class="form-control" required>
+							<option value="phone">{{ trans('site.phone-call') }}</option>
+							<option value="video">{{ trans('site.video-call') }}</option>
+						</select>
+					</div>
+					<div class="text-right">
+						<button class="btn btn-primary" type="submit">
+							{{ trans('site.save') }}
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="assignCoachingSessionModal" class="modal fade coaching-session-modal" role="dialog" data-backdrop="static">
+        <div class="modal-dialog">
+                <div class="modal-content">
+                        <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">{{ trans('site.assign-editor') }}</h4>
+                        </div>
+                        <div class="modal-body">
+                                <form method="POST" action="" onsubmit="disableSubmit(this)">
+                                        {{ csrf_field() }}
+
+                                        <div class="form-group">
+                                                <label>{{ trans('site.session-length') }}</label>
+                                                <p class="form-control-static plan-type-label text-capitalize"></p>
+                                                <input type="hidden" name="plan_type" value="">
+                                        </div>
+
+                                        <div class="form-group">
+                                                <label>{{ ucwords(trans('site.assign-to')) }}</label>
+                                                <select name="editor_id" class="form-control select2" required>
+                                                        <option value="" disabled selected>-- Select Editor --</option>
+                                                        @foreach( App\User::whereIn('role', array(1,3))->orderBy('created_at', 'desc')->get() as $editor )
+                                                                <option value="{{ $editor->id }}">{{ $editor->full_name }}</option>
+                                                        @endforeach
+                                                </select>
+                                        </div>
+
+                                        <div class="form-group d-none editor-time-slots-container">
+                                                <label>Available Time Slots</label>
+                                                <div class="editor-time-slots"></div>
+                                        </div>
+
+                                        <div class="text-right margin-top">
+                                                <button type="submit" class="btn btn-success">{{ trans('site.submit') }}</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('site.cancel') }}</button>
+                                        </div>
+                                </form>
+                        </div>
+
+                </div>
+
+        </div>
+</div>
+
 <div id="setReplayModal" class="modal fade" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
