@@ -217,7 +217,7 @@ class HomeController extends Controller
             // AdminHelpers::send_email('Inquiry Message','post@easywrite.se','post@easywrite.se', $email_content);
             $to = 'post@easywrite.se'; //
             $emailData = [
-                'email_subject' => 'Inquiry Message',
+                'email_subject' => trans('site.inquiry-message'),
                 'email_message' => $email_content,
                 'from_name' => $request->fullname,
                 'from_email' => $request->email,
@@ -225,7 +225,7 @@ class HomeController extends Controller
             ];
             \Mail::to($to)->queue(new SubjectBodyEmail($emailData));
 
-            return redirect()->back()->with(['errors' => AdminHelpers::createMessageBag('Din melding er sendt'),
+            return redirect()->back()->with(['errors' => AdminHelpers::createMessageBag(trans('site.your-message-has-been-sent')),
                 'alert_type' => 'success']);
         }
 

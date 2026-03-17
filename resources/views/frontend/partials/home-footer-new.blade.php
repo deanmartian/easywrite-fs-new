@@ -3,9 +3,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">
-                    <h3>Gratis skrivetips</h3>                    
+                    <h3>{{ trans('site.front.home.free-writing-tips') }}</h3>                    
                     <p>
-                        Rektor sine 66 beste tips 
+                        {{ trans('site.front.home.free-writing-tips-title') }}
                     </p>
                 </div>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
