@@ -21,7 +21,7 @@ class AssignmentManuscriptEmailToList extends Mailable
 
     public function build()
     {
-        return $this->from('post@easywrite.se', 'Easywrite')
+        return $this->replyTo('post@easywrite.se', 'Easywrite')
             ->subject($this->data['subject'])
             ->view('emails.assignment_manuscript_email_to_list');
     }

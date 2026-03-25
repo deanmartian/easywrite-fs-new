@@ -55,6 +55,7 @@ class CourseOrderMail extends Mailable
     {
         $email = $this->to($this->recipient)
             ->from($this->from_email, $this->from_name)
+            ->replyTo('post@easywrite.se', 'Easywrite')
             ->subject($this->email_subject)
             ->view('emails.course_order')
             ->text('emails.subject_body_plain');

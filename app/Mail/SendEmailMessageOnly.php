@@ -19,7 +19,7 @@ class SendEmailMessageOnly extends Mailable
 
     public function build()
     {
-        return $this->from('post@easywrite.se', 'Easywrite')
+        return $this->replyTo('post@easywrite.se', 'Easywrite')
             ->subject('Oppgaven er levert')
             ->view('emails.assignment_submit_confirmed');
     }

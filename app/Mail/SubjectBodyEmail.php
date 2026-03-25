@@ -27,7 +27,7 @@ class SubjectBodyEmail extends Mailable
         $this->email_message = $email_data['email_message'];
         $this->email_subject = $email_data['email_subject'];
         $this->from_name = $email_data['from_name'] ? $email_data['from_name'] : 'Easywrite';
-        $this->from_email = $email_data['from_email'] ? $email_data['from_email'] : 'post@easywrite.se';
+        $this->from_email = $email_data['from_email'] ? $email_data['from_email'] : config('mail.from.address');
         $this->attach_file = $email_data['attach_file'] ?: null;
         $this->email_view = isset($email_data['view']) ? $email_data['view'] : 'emails.subject_body';
     }
@@ -35,6 +35,7 @@ class SubjectBodyEmail extends Mailable
     public function build()
     {
         $email = $this->from($this->from_email, $this->from_name)
+            ->replyTo('post@easywrite.se', 'Easywrite')
             ->subject($this->email_subject)
             ->view($this->email_view)
             ->text('emails.subject_body_plain');

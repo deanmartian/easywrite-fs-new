@@ -25,7 +25,7 @@ class PasswordResetEmail extends Mailable
 
     public function build()
     {
-        return $this->from('post@easywrite.se', 'Easywrite')
+        return $this->replyTo('post@easywrite.se', 'Easywrite')
             ->subject('Passord Tilbakestilling Forespørsel')
             ->view('emails.passwordreset');
     }

@@ -1,40 +1,25 @@
-<html>
-<head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
-</head>
-<body>
-<table cellpadding="0" cellspacing="0" border="0" style='font-weight: 300!important;
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"'>
-    <tr>
-        <td style="padding-top: 1rem">Hei {{ $email_data['name'] }},</td>
-    </tr>
-    <tr>
-        <td style="padding-top: .3rem">Dette er en automatisk epost fra Easywrite for å bekrefte at du eier denne epost adressen:  <strong>{{ $email_data['email'] }}</strong>.</td>
-    </tr>
-    <tr>
-        <td style="padding-top:1.2rem;padding-bottom:0.5rem;">
-            <a href="{{ route("front.email-confirmation",$email_data['token']) }}" style="text-decoration: none;
-                    color: #fff;
-                    background: #e83945;
-                    border-color: #e83945;
-                    padding-right: 1.1rem;
-                    padding-left: 1.1rem;
-                    padding-top: 0.5rem;
-                    padding-bottom: 0.5rem;
-                    -webkit-text-size-adjust: none;
-                    line-height: 1.5;
-                    border-radius: .2rem;
-                    margin-right: 10px">
-                Klikk her for å bekrefte epostadressen
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-top: .3rem">
-            Hvis du mottok denne meldingen ved en feil, kan du se bort fra denne e-posten. Hvis du har spørsmål, vennligst gi oss beskjed via:  <strong>post@easywrite.se</strong>.
-        </td>
-    </tr>
-</table>
-</body>
-</html>
+@extends('emails.layouts.master')
+
+@section('preheader', 'Bekräfta din e-postadress')
+
+@section('content')
+    <p style="margin: 0 0 20px; font-size: 16px; color: #3d4852;">
+        Hej {{ $email_data['name'] }},
+    </p>
+
+    <p style="margin: 0 0 20px; font-size: 16px; color: #3d4852;">
+        Det här är ett automatiskt e-postmeddelande från Easywrite för att bekräfta att du äger den här e-postadressen: <strong>{{ $email_data['email'] }}</strong>.
+    </p>
+
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 30px 0;">
+        <tr>
+            <td align="center">
+                <a href="{{ route('front.email-confirmation', $email_data['token']) }}" target="_blank" style="display: inline-block; padding: 14px 36px; background-color: #3097D1; color: #ffffff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Klicka här för att bekräfta e-postadressen</a>
+            </td>
+        </tr>
+    </table>
+
+    <p style="margin: 20px 0 0; font-size: 14px; color: #9ba2ab;">
+        Om du fick det här meddelandet av misstag kan du bortse från det. Om du har frågor, vänligen kontakta oss via: <strong>post@easywrite.se</strong>.
+    </p>
+@endsection

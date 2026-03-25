@@ -22,7 +22,7 @@ class FreeCourseNewUserEmail extends Mailable
 
     public function build()
     {
-        return $this->from('post@easywrite.se', 'Easywrite')
+        return $this->replyTo('post@easywrite.se', 'Easywrite')
             ->subject($this->email_subject)
             ->view('emails.free_course_new_user')
             ->text('emails.subject_body_plain');

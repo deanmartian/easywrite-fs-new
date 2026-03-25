@@ -49,7 +49,7 @@ class CourseOrderJob implements ShouldQueue
         $this->recipient = $recipient;
         $this->email_subject = $subject;
         $this->email_content = $message;
-        $this->from_email = $from_email ?: 'post@easywrite.se';
+        $this->from_email = $from_email ?: config('mail.from.address');
         $this->from_name = $from_name ?: 'Easywrite';
         $this->attach_file = $attachment;
         $this->parent = $parent;
