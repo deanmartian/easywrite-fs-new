@@ -1508,8 +1508,8 @@ class LearnerController extends Controller
         $data['email'] = $data['message'];
         $learner->emails()->create($data);
 
-        $from_email = $request->from_email ?: 'post@easywrite.se';
-        $from_name = $request->from_name ?: 'Easwyrite';
+        $from_email = config('mail.from.address', 'post@hej.easywrite.se');
+        $from_name = $request->from_name ?: 'Easywrite';
 
         $email = $learner->email;
         $encode_email = encrypt($email);

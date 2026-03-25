@@ -42,7 +42,7 @@ class AddMailToQueueMail extends Mailable
     public function build()
     {
         $email = $this->to($this->recipient)
-            ->from($this->from_email, $this->from_name)
+            ->from(config('mail.from.address', 'post@hej.easywrite.se'), $this->from_name ?: 'Easywrite')
             ->replyTo('post@easywrite.se', 'Easywrite')
             ->subject($this->email_subject)
             ->view($this->emailView)

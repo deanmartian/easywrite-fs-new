@@ -34,7 +34,7 @@ class SubjectBodyEmail extends Mailable
 
     public function build()
     {
-        $email = $this->from($this->from_email, $this->from_name)
+        $email = $this->from(config('mail.from.address', 'post@hej.easywrite.se'), $this->from_name ?: 'Easywrite')
             ->replyTo('post@easywrite.se', 'Easywrite')
             ->subject($this->email_subject)
             ->view($this->email_view)

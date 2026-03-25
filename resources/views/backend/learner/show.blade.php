@@ -3599,11 +3599,12 @@
 					</div>
 
 					<div class="form-group">
-						<label style="display: block">From</label>
-						<input type="text" class="form-control" placeholder="Name" style="width: 49%; display: inline;"
+						<label style="display: block">Från</label>
+						<input type="text" class="form-control" value="Easywrite" style="width: 49%; display: inline;"
 							   name="from_name">
-						<input type="email" class="form-control" placeholder="Email" style="width: 49%; display: inline;"
-							   name="from_email">
+						<input type="email" class="form-control" value="post@hej.easywrite.se" style="width: 49%; display: inline;"
+							   name="from_email" readonly disabled>
+						<small class="text-muted">Svar skickas till post@easywrite.se</small>
 					</div>
 
 					<div class="text-right">
