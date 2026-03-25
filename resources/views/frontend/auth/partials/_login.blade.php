@@ -54,22 +54,37 @@
 
         <div class="clearfix"></div>
 
-        <div class="login-text">{{ trans('site.login-with') }}:</div>
+        <div class="login-text">Logga in med:</div>
 
         <div class="social-btn-container">
             <a href="{{ route('auth.login.google') }}" class="newLoginBtn newLoginBtn--google btn">
                 Google
             </a>
+        </div>
 
-            <a href="{{ route('auth.login.facebook') }}" class="newLoginBtn newLoginBtn--facebook btn">
-                Faceboook
-            </a>
-
-            {{-- <a href="{{ route('auth.login.vipps') }}" class="newLoginBtn newLoginBtn--vipps btn">
-                <img src="{{ asset('images-new/icon/vipps-text.png') }}" alt="">
-            </a> --}}
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+            <p style="text-align: center; color: #666; margin-bottom: 10px;">Eller logga in utan lösenord:</p>
         </div>
     </form>
+
+    <form method="post" action="{{ route('frontend.magic-link.send') }}">
+        {{ csrf_field() }}
+        <div class="input-group" style="margin-bottom: 10px;">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa mail-icon"></i></span>
+            </div>
+            <input type="email" name="email" class="form-control no-border-left" placeholder="Din e-postadress" required>
+        </div>
+        <button type="submit" class="btn site-btn-global-w-arrow" style="width: 100%;">
+            Skicka inloggningslänk <span style="margin-left: 5px;">→</span>
+        </button>
+    </form>
+
+    @if (Session::has('magic_link_sent'))
+        <div class="alert alert-success d-flex mt-3" style="margin-bottom: 0;">
+            Vi har skickat en inloggningslänk till din e-post. Kolla din inkorg!
+        </div>
+    @endif
 @endif
 
 @if( Request::input('tab') == 'self-publishing' )

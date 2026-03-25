@@ -613,6 +613,7 @@ Route::domain($front)->group(function () {
         Route::post('checkout/login', [Auth\LoginController::class, 'checkoutLogin'])->name('frontend.login.checkout.store');
         Route::post('register', [Auth\RegisterController::class, 'store'])->name('frontend.register.store');
         Route::post('passwordreset', [Auth\ResetPasswordController::class, 'store'])->name('frontend.passwordreset.store');
+        Route::post('magic-link', [Auth\LoginController::class, 'sendMagicLink'])->name('frontend.magic-link.send');
         Route::get('passwordreset/{token}', [Auth\ResetPasswordController::class, 'resetForm'])->name('frontend.passwordreset.form');
         Route::post('passwordreset/{token}/update', [Auth\ResetPasswordController::class, 'updatePassword'])->name('frontend.passwordreset.update');
         Route::post('password-change', [Auth\ResetPasswordController::class, 'changePassword'])->name('frontend.password-change');

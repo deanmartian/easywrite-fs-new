@@ -270,6 +270,46 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * Send magic link to user's email
+     */
+    public function sendMagicLink(Request $request): RedirectResponse
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)->where('role', 2)->first();
+
+        // Always show success message (don't reveal if email exists)
+        if (! $user) {
+            return redirect()->back()->with([
+                'magic_link_sent' => true,
+            ]);
+        }
+
+        $encryptedEmail = encrypt($user->email);
+        $loginUrl = route('auth.login.email', $encryptedEmail);
+
+        $emailData = [
+            'email_subject' => 'Din inloggningslänk till Easywrite',
+            'email_message' => '<p>Hej ' . $user->first_name . ',</p>' .
+                '<p>Klicka på knappen nedan för att logga in på ditt Easywrite-konto. Ingen lösenord behövs.</p>' .
+                '<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 30px 0;">' .
+                '<tr><td align="center">' .
+                '<a href="' . $loginUrl . '" target="_blank" style="display: inline-block; padding: 14px 36px; background-color: #3097D1; color: #ffffff; font-family: \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Logga in</a>' .
+                '</td></tr></table>' .
+                '<p style="font-size: 13px; color: #9ba2ab;">Om du inte begärde denna länk kan du ignorera detta meddelande.</p>',
+            'from_name' => 'Easywrite',
+            'from_email' => config('mail.from.address'),
+            'attach_file' => null,
+        ];
+
+        \Mail::to($user->email)->send(new SubjectBodyEmail($emailData));
+
+        return redirect()->back()->with([
+            'magic_link_sent' => true,
+        ]);
+    }
+
     /** login using encrypted email
      */
     public function emailLogin($email, Request $request): RedirectResponse
