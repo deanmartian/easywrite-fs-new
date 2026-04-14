@@ -416,7 +416,7 @@
 																				{{ $webinar->title }}
 																			</h2>
 																			<p class="note-color my-4">
-																				{{ \Illuminate\Support\Str::limit(strip_tags($webinar->description), 180)}}
+																				{{ \Illuminate\Support\Str::limit(strip_tags($webinar->description), 300)}}
 																			</p>
 																		</div>
 																	</div> <!-- end card-body -->
